@@ -1,0 +1,69 @@
+{
+  "project": "Breast Cancer Histopathology AI",
+  "experiment_id": "06.3A",
+  "experiment_name": "Candidate-Group-Balanced DenseNet121",
+  "model_file": "densenet121_063A.keras",
+  "backbone": "DenseNet121",
+  "initialization": "ImageNet",
+  "input": {
+    "color_space": "RGB",
+    "height": 224,
+    "width": 224,
+    "channels": 3
+  },
+  "preprocessing": {
+    "decode": "RGB",
+    "resize": "TensorFlow bilinear resize with antialias=True to 224x224",
+    "normalization": "tf.keras.applications.densenet.preprocess_input",
+    "extra_rescale_0_1": false
+  },
+  "precision_policy": "float32",
+  "classes": {
+    "0": "benign",
+    "1": "malignant"
+  },
+  "decision_threshold": 0.88,
+  "threshold_selection": "Validation balanced accuracy; tie-break malignant sensitivity",
+  "training": {
+    "batch_size": 8,
+    "stage_a_max_epochs": 8,
+    "stage_a_learning_rate": 0.0001,
+    "stage_b_max_epochs": 12,
+    "stage_b_learning_rate": 1e-05,
+    "fine_tuning": "Final DenseNet conv5_block and norm5 layers trainable; BatchNormalization layers frozen",
+    "augmentation": [
+      "RandomFlip(horizontal)",
+      "RandomRotation(0.08)",
+      "RandomZoom(0.10)",
+      "RandomContrast(0.10)"
+    ],
+    "sampler": "Class probability proportional to original training image counts; uniform candidate group within selected class; uniform image within candidate group; sampling with replacement",
+    "class_weights": {
+      "0": 1.5574,
+      "1": 0.7364
+    }
+  },
+  "development_test_metrics": {
+    "threshold": 0.88,
+    "accuracy": 0.8791,
+    "roc_auc": 0.9129,
+    "malignant_precision": 0.8738,
+    "malignant_sensitivity": 0.96,
+    "benign_specificity": 0.7102,
+    "malignant_f1": 0.9148,
+    "balanced_accuracy": 0.8351,
+    "confusion_matrix": {
+      "tn": 348,
+      "fp": 142,
+      "fn": 41,
+      "tp": 983
+    },
+    "test_images": 1514
+  },
+  "research_caveats": [
+    "The test partition has been used for exploratory analysis and is not an untouched final holdout.",
+    "Candidate-group identifiers parsed from filenames require verification against official BreakHis patient metadata before claiming definitive patient-independent evaluation.",
+    "Metrics are dataset-specific experimental results and are not clinical performance guarantees.",
+    "Arbitrary user-uploaded images may be out of distribution."
+  ]
+}

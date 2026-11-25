@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Model weights / generated artifacts
+*.keras
+*.h5
+*.weights.h5
+*.ckpt
+*.pb
+*.onnx
+*.pt
+*.pth
+backend/app/model/*.sha256
+backend/uploads/
+backend/outputs/
+
+# Frontend
+node_modules/
+dist/
+.vite/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Notebooks
+.ipynb_checkpoints/
