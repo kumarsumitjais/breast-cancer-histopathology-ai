@@ -104,7 +104,16 @@ The model is loaded once at application startup. If weights are absent, the API 
 
 Accepted image formats: JPEG, PNG, TIFF. Upload size and pixel count are bounded. The API does not persist uploaded images.
 
-## 4. Reproducibility and scientific boundaries
+## 4. Live demo deployment
+
+The root `Dockerfile` builds the frontend and serves it together with the API on port 7860, so the demo is one container on one origin. Deploy it to a Hugging Face Docker Space (model weights included) with:
+
+```bash
+hf auth login
+python backend/scripts/deploy_space.py
+```
+
+## 5. Reproducibility and scientific boundaries
 
 - Inference preprocessing must match training: decode RGB, resize to 224×224 with antialiasing, then DenseNet preprocessing. Do not rescale to `[0, 1]` separately.
 - The validation-selected threshold is 0.88 for the latest rerun. A threshold is an operating point, not a model confidence guarantee.

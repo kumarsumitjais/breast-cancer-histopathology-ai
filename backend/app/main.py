@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import List
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
 
 from .inference import (
     MODEL_METADATA, MODEL_ID, MAX_UPLOAD_BYTES,
@@ -109,3 +111,10 @@ async def explain(file: UploadFile = File(...)):
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except FileNotFoundError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+# Production (Docker / Hugging Face Space): serve the built frontend from the same origin.
+# Mounted last so API routes take precedence. Absent in local dev, where Vite serves it.
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+if STATIC_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="frontend")
